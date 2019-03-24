@@ -8,9 +8,17 @@ using System.IO;
 
 namespace ChatRoomServer
 {
+    struct Message
+    {
+        public String Contents { get; set; }
+        public String Sender { get; set; }
+        public List<String> Received { get; set; }
+    }
+
     class Program
     {
         static List<String> messagesToSend = new List<String>();
+        static List<String> clientNames = new List<string>();
 
         static void Main(string[] args)
         {
@@ -60,6 +68,23 @@ namespace ChatRoomServer
                                     writer.Flush();
                                     Console.WriteLine("A message has been sent out.");
                                 }
+                            }
+                            break;
+                        case "2":
+                            String submittedName = splitRequest[1];
+                            if (!clientNames.Contains(submittedName))
+                            {
+                                String responseString = "2|Yes";
+                                byte[] response = Encoding.ASCII.GetBytes(responseString);
+                                writer.BaseStream.Write(response, 0, response.Length);
+                                writer.Flush();
+                            }
+                            else
+                            {
+                                String responseString = "2|No";
+                                byte[] response = Encoding.ASCII.GetBytes(responseString);
+                                writer.BaseStream.Write(response, 0, response.Length);
+                                writer.Flush();
                             }
                             break;
                     }

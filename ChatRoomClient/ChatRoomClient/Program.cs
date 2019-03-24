@@ -14,10 +14,15 @@ namespace ChatRoomClient
     {
         static String toBeAdded = String.Empty;
         static MainForm form = new MainForm();
+        static String name;
 
         [STAThread]
         static void Main()
         {
+            LoginForm login = new LoginForm();
+            login.ShowDialog();
+            name = LoginForm.Username;
+
             //Set up multithreading
 
             Thread initThread = new Thread(new ThreadStart(Init));
@@ -42,13 +47,13 @@ namespace ChatRoomClient
 
                 TcpClient client = new TcpClient("127.0.0.1", 1304);
 
-                byte[] updateMessage = ASCIIEncoding.ASCII.GetBytes("1");
+                byte[] updateMessage = ASCIIEncoding.ASCII.GetBytes("1|" + name);
                 StreamWriter writer = new StreamWriter(client.GetStream());
                 writer.BaseStream.Write(updateMessage, 0, updateMessage.Length);
                 writer.Flush();
 
                 byte[] buffer = new byte[client.Client.ReceiveBufferSize];
-                client.Client.Receive(buffer);      //Getting stuck waiting here...maybe????
+                client.Client.Receive(buffer);
                 String response = Encoding.ASCII.GetString(buffer).TrimEnd(new char[] { '\n', '\r', default(char) });
                 List<String> splitResponse = response.Split(new char[] { '|' }).ToList<string>();
                 String id = splitResponse[0];

@@ -14,9 +14,12 @@ namespace ChatRoomClient
 {
     public partial class MainForm : Form
     {
+        String name;
+
         public MainForm()
         {
             InitializeComponent();
+            name = LoginForm.Username;
         }
 
         private void sendButton_Click(object sender, EventArgs e)
@@ -25,9 +28,7 @@ namespace ChatRoomClient
 
             StreamWriter writer = new StreamWriter(client.GetStream());
 
-            //Here's where we get into weird byte ASCII encoding of the message and stuff
-
-            byte[] message = ASCIIEncoding.ASCII.GetBytes("0|" + inputTextBox.Text);
+            byte[] message = ASCIIEncoding.ASCII.GetBytes("0|" + inputTextBox.Text + "|" + name);
             writer.BaseStream.Write(message, 0, message.Length);
             writer.Flush();
 
