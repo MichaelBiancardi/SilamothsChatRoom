@@ -19,7 +19,6 @@ namespace ChatRoomClient
         public MainForm()
         {
             InitializeComponent();
-            name = LoginForm.Username;
         }
 
         private void sendButton_Click(object sender, EventArgs e)
@@ -28,7 +27,7 @@ namespace ChatRoomClient
 
             StreamWriter writer = new StreamWriter(client.GetStream());
 
-            byte[] message = ASCIIEncoding.ASCII.GetBytes("0|" + inputTextBox.Text + "|" + name);
+            byte[] message = ASCIIEncoding.ASCII.GetBytes("0|" + inputTextBox.Text + "|" + LoginForm.Username);
             writer.BaseStream.Write(message, 0, message.Length);
             writer.Flush();
 

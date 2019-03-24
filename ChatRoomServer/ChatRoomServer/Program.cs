@@ -25,7 +25,7 @@ namespace ChatRoomServer
     class Program
     {
         //static List<String> messagesToSend = new List<String>();
-        static List<String> clientNames = new List<string>();
+        static List<String> clientNames = new List<String>();
         static List<Message> messagesToSend = new List<Message>();
 
         static void Main(string[] args)
@@ -47,13 +47,15 @@ namespace ChatRoomServer
 
                     String id = splitRequest[0];
 
-                    List<String> newMessages = new List<String>();
+                    List<Message> newMessages = new List<Message>();
 
                     switch (id)
                     {
                         case "0":
                             //A message has been sent by a client
-                            newMessages.Add(splitRequest[1]);
+                            Message newMessage = new Message(splitRequest[1]);
+                            newMessage.Sender = splitRequest[2];
+                            newMessages.Add(newMessage);
                             Console.WriteLine("A message has been received: " + splitRequest[1]);
                             break;
                         case "1":
@@ -74,7 +76,7 @@ namespace ChatRoomServer
                                 {
                                     if (!messagesToSend[i].Received.Contains(splitRequest[1]))
                                     {
-                                        String responseString = "1|" + messagesToSend[i].Contents;
+                                        String responseString = "1|" + messagesToSend[i].Sender + ": " + messagesToSend[i].Contents;
                                         byte[] response = Encoding.ASCII.GetBytes(responseString);
                                         writer.BaseStream.Write(response, 0, response.Length);
                                         writer.Flush();
@@ -82,9 +84,28 @@ namespace ChatRoomServer
 
                                         List<String> newReceived = messagesToSend[i].Received;
                                         newReceived.Add(splitRequest[1]);
-                                        Message newMessage = messagesToSend[i];
-                                        newMessage.Received = newReceived;
-                                        newMessageList[i] = newMessage;
+                                        Message newM = messagesToSend[i];
+                                        newM.Received = newReceived;
+                                        newMessageList[i] = newM;
+                                    }                                    
+                                }
+
+                                messagesToSend = newMessageList;
+
+                                for (int i = 0; i < messagesToSend.Count; i++)
+                                {
+                                    bool canBeRemoved = true;
+
+                                    foreach (String name in clientNames)
+                                    {
+                                        if (!messagesToSend[i].Received.Contains(name))
+                                            canBeRemoved = false;
+                                    }
+
+                                    if (canBeRemoved)
+                                    {
+                                        messagesToSend.RemoveAt(i);
+                                        i--;
                                     }
                                 }
                             }
@@ -97,6 +118,7 @@ namespace ChatRoomServer
                                 byte[] response = Encoding.ASCII.GetBytes(responseString);
                                 writer.BaseStream.Write(response, 0, response.Length);
                                 writer.Flush();
+                                clientNames.Add(submittedName);
                             }
                             else
                             {
@@ -108,11 +130,9 @@ namespace ChatRoomServer
                             break;
                     }
 
-                    foreach (String message in newMessages)
+                    foreach (Message message in newMessages)
                     {
-                        Message newMessage = new Message(message);
-
-                        messagesToSend.Add(newMessage);
+                        messagesToSend.Add(message);
                     }
 
                     client.Close();
