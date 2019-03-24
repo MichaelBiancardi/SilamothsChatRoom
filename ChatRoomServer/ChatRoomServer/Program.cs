@@ -13,12 +13,20 @@ namespace ChatRoomServer
         public String Contents { get; set; }
         public String Sender { get; set; }
         public List<String> Received { get; set; }
+
+        public Message(String contents)
+        {
+            Received = new List<string>();
+            Sender = String.Empty;
+            Contents = contents;
+        }
     }
 
     class Program
     {
-        static List<String> messagesToSend = new List<String>();
+        //static List<String> messagesToSend = new List<String>();
         static List<String> clientNames = new List<string>();
+        static List<Message> messagesToSend = new List<Message>();
 
         static void Main(string[] args)
         {
@@ -60,13 +68,24 @@ namespace ChatRoomServer
                             }
                             else
                             {
-                                foreach (String message in messagesToSend)
+                                List<Message> newMessageList = messagesToSend;
+
+                                for (int i = 0; i < messagesToSend.Count; i++)
                                 {
-                                    String responseString = "1|" + message;
-                                    byte[] response = Encoding.ASCII.GetBytes(responseString);
-                                    writer.BaseStream.Write(response, 0, response.Length);
-                                    writer.Flush();
-                                    Console.WriteLine("A message has been sent out.");
+                                    if (!messagesToSend[i].Received.Contains(splitRequest[1]))
+                                    {
+                                        String responseString = "1|" + messagesToSend[i].Contents;
+                                        byte[] response = Encoding.ASCII.GetBytes(responseString);
+                                        writer.BaseStream.Write(response, 0, response.Length);
+                                        writer.Flush();
+                                        Console.WriteLine("A message has been sent out.");
+
+                                        List<String> newReceived = messagesToSend[i].Received;
+                                        newReceived.Add(splitRequest[1]);
+                                        Message newMessage = messagesToSend[i];
+                                        newMessage.Received = newReceived;
+                                        newMessageList[i] = newMessage;
+                                    }
                                 }
                             }
                             break;
@@ -91,7 +110,9 @@ namespace ChatRoomServer
 
                     foreach (String message in newMessages)
                     {
-                        messagesToSend.Add(message);
+                        Message newMessage = new Message(message);
+
+                        messagesToSend.Add(newMessage);
                     }
 
                     client.Close();
