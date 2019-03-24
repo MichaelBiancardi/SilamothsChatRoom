@@ -55,6 +55,7 @@
             // outputTextBox
             // 
             this.outputTextBox.Enabled = false;
+            this.outputTextBox.ForeColor = System.Drawing.SystemColors.WindowText;
             this.outputTextBox.Location = new System.Drawing.Point(12, 13);
             this.outputTextBox.Name = "outputTextBox";
             this.outputTextBox.Size = new System.Drawing.Size(864, 327);
@@ -73,6 +74,7 @@
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Silamoth\'s Chat Room";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.ResumeLayout(false);
 
         }

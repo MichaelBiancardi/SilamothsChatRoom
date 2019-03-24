@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Net.Sockets;
 using System.Threading;
 using System.IO;
+using System.Text;
 
 namespace ChatRoomClient
 {
@@ -35,35 +36,27 @@ namespace ChatRoomClient
 
         static void CheckForStuff()
         {
-            //Check for incoming messages and such
-
-            TcpListener listener = new TcpListener(1304);
-
             while (true)
             {
-                TcpClient client = listener.AcceptTcpClient();
+                //Check for incoming messages and such
 
-                StreamReader reader = new StreamReader(client.GetStream());
+                TcpClient client = new TcpClient("127.0.0.1", 1304);
+
+                byte[] updateMessage = ASCIIEncoding.ASCII.GetBytes("1");
                 StreamWriter writer = new StreamWriter(client.GetStream());
+                writer.BaseStream.Write(updateMessage, 0, updateMessage.Length);
+                writer.Flush();
 
-                try
-                {
-                    String[] tokens = reader.ReadLine().Split('|');
+                byte[] buffer = new byte[client.Client.ReceiveBufferSize];
+                client.Client.Receive(buffer);      //Getting stuck waiting here...maybe????
+                String response = Encoding.ASCII.GetString(buffer).TrimEnd(new char[] { '\n', '\r', default(char) });
+                List<String> splitResponse = response.Split(new char[] { '|' }).ToList<string>();
+                String id = splitResponse[0];
 
-                    String id = tokens[0];
+                if (id == "1")
+                    form.InsertIntoTextBox(splitResponse[1]);
 
-                    switch (id)
-                    {
-                        case "0":
-                            //Someone has sent a chat message
-
-                            toBeAdded = tokens[1] + ": " + tokens[2];   //Store name of user plus their message
-
-                            form.InsertIntoTextBox(toBeAdded);  //For some reason I did this a different way in Web Server...I'll have to test if that was necessary
-                            break;
-                    }
-                }
-                catch { }
+                client.Close();
             }
         }
 

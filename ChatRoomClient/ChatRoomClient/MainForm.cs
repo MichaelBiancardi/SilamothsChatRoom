@@ -26,6 +26,16 @@ namespace ChatRoomClient
             StreamWriter writer = new StreamWriter(client.GetStream());
 
             //Here's where we get into weird byte ASCII encoding of the message and stuff
+
+            byte[] message = ASCIIEncoding.ASCII.GetBytes("0|" + inputTextBox.Text);
+            writer.BaseStream.Write(message, 0, message.Length);
+            writer.Flush();
+
+            //TODO: Add response verification
+
+            client.Close();
+
+            inputTextBox.Text = String.Empty;
         }
 
         public void InsertIntoTextBox(String text)
@@ -35,7 +45,12 @@ namespace ChatRoomClient
             if (text == String.Empty)
                 return;
 
-            outputTextBox.Text += text + Environment.NewLine;
+            outputTextBox.Invoke(new Action(() => outputTextBox.Text += text + Environment.NewLine));
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Environment.Exit(Environment.ExitCode);
         }
     }
 }
