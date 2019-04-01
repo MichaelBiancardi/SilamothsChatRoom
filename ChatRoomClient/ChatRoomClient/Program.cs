@@ -62,6 +62,21 @@ namespace ChatRoomClient
                     form.InsertIntoTextBox(splitResponse[1]);
 
                 client.Close();
+
+                if (form.kill)
+                {
+                    client = new TcpClient("127.0.0.1", 1304);
+
+                    writer = new StreamWriter(client.GetStream());
+
+                    byte[] message = ASCIIEncoding.ASCII.GetBytes("3|" + LoginForm.Username);
+                    writer.BaseStream.Write(message, 0, message.Length);
+                    writer.Flush();
+
+                    client.Close();
+
+                    Environment.Exit(Environment.ExitCode);
+                }
             }
         }
 

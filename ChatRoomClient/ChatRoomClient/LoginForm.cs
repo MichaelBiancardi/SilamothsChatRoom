@@ -63,5 +63,11 @@ namespace ChatRoomClient
         {
             get { return name; }
         }
+
+        private void LoginForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (name == null)
+                Environment.Exit(Environment.ExitCode);
+        }
     }
 }

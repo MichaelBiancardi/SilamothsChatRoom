@@ -15,6 +15,7 @@ namespace ChatRoomClient
     public partial class MainForm : Form
     {
         String name;
+        public bool kill = false;
 
         public MainForm()
         {
@@ -50,7 +51,7 @@ namespace ChatRoomClient
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Environment.Exit(Environment.ExitCode);
+            kill = true;
         }
     }
 }

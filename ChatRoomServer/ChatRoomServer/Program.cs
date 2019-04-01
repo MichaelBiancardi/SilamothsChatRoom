@@ -30,11 +30,11 @@ namespace ChatRoomServer
 
         static void Main(string[] args)
         {
-            TcpListener listener = new TcpListener(1304);
-            listener.Start();
-
             try
             {
+                TcpListener listener = new TcpListener(1304);
+                listener.Start();
+
                 while (true)
                 {
                     TcpClient client = listener.AcceptTcpClient();
@@ -56,7 +56,7 @@ namespace ChatRoomServer
                             Message newMessage = new Message(splitRequest[1]);
                             newMessage.Sender = splitRequest[2];
                             newMessages.Add(newMessage);
-                            Console.WriteLine("A message has been received: " + splitRequest[1]);
+                            //Console.WriteLine("A message has been received: " + splitRequest[1]);
                             break;
                         case "1":
                             //Searching for new messages
@@ -80,14 +80,14 @@ namespace ChatRoomServer
                                         byte[] response = Encoding.ASCII.GetBytes(responseString);
                                         writer.BaseStream.Write(response, 0, response.Length);
                                         writer.Flush();
-                                        Console.WriteLine("A message has been sent out.");
+                                        //Console.WriteLine("A message has been sent out.");
 
                                         List<String> newReceived = messagesToSend[i].Received;
                                         newReceived.Add(splitRequest[1]);
                                         Message newM = messagesToSend[i];
                                         newM.Received = newReceived;
                                         newMessageList[i] = newM;
-                                    }                                    
+                                    }
                                 }
 
                                 messagesToSend = newMessageList;
@@ -111,6 +111,8 @@ namespace ChatRoomServer
                             }
                             break;
                         case "2":
+                            //Someone is joining and wants to check if a name works
+
                             String submittedName = splitRequest[1];
                             if (!clientNames.Contains(submittedName))
                             {
@@ -119,6 +121,10 @@ namespace ChatRoomServer
                                 writer.BaseStream.Write(response, 0, response.Length);
                                 writer.Flush();
                                 clientNames.Add(submittedName);
+
+                                Message notify = new Message(submittedName + " has joined the chat room!");
+                                notify.Sender = "Admin";
+                                newMessages.Add(notify);
                             }
                             else
                             {
@@ -127,6 +133,14 @@ namespace ChatRoomServer
                                 writer.BaseStream.Write(response, 0, response.Length);
                                 writer.Flush();
                             }
+                            break;
+
+                        case "3":
+                            //A user is logging off
+
+                            String clientName = splitRequest[1];
+
+                            clientNames.Remove(clientName);
                             break;
                     }
 
@@ -138,7 +152,10 @@ namespace ChatRoomServer
                     client.Close();
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }
