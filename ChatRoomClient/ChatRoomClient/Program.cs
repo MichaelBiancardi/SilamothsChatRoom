@@ -21,7 +21,7 @@ namespace ChatRoomClient
         {
             LoginForm login = new LoginForm();
             login.ShowDialog();
-            name = LoginForm.Username;
+            name = LoginForm.Username;            
 
             //Set up multithreading
 
@@ -59,7 +59,7 @@ namespace ChatRoomClient
                 String id = splitResponse[0];
 
                 if (id == "1")
-                    form.InsertIntoTextBox(splitResponse[1]);
+                    form.InsertIntoTextBox(splitResponse[1], splitResponse[2]);
 
                 client.Close();
 

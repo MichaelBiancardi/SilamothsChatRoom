@@ -15,6 +15,7 @@ namespace ChatRoomClient
     public partial class LoginForm : Form
     {
         static String name;
+        static List<String> channels;
 
         public LoginForm()
         {
@@ -49,6 +50,9 @@ namespace ChatRoomClient
                 {
                     MessageBox.Show("Have fun in Silamoth's Chat Room!", "Success", MessageBoxButtons.OK);
                     name = nameTextBox.Text;
+
+                    channels = splitResponse[2].Split(',').ToList<String>();    //Get list of channels
+
                     Close();
                 }
                 else
@@ -62,6 +66,11 @@ namespace ChatRoomClient
         public static String Username
         {
             get { return name; }
+        }
+
+        public static List<String> Channels
+        {
+            get { return channels; }
         }
 
         private void LoginForm_FormClosing(object sender, FormClosingEventArgs e)

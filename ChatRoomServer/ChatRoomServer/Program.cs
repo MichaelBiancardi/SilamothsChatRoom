@@ -13,23 +13,42 @@ namespace ChatRoomServer
         public String Contents { get; set; }
         public String Sender { get; set; }
         public List<String> Received { get; set; }
+        public String Channel { get; set; }
 
-        public Message(String contents)
+        public Message(String contents, String channel, String sender)
         {
-            Received = new List<string>();
-            Sender = String.Empty;
+            Received = new List<String>();
+            Sender = sender;
             Contents = contents;
+            Channel = channel;
         }
     }
 
     class Program
     {
-        //static List<String> messagesToSend = new List<String>();
         static List<String> clientNames = new List<String>();
         static List<Message> messagesToSend = new List<Message>();
+        static List<String> channels = new List<String>();
 
         static void Main(string[] args)
         {
+            try
+            {
+                StreamReader reader = new StreamReader("channels.txt");
+
+                while (reader.Peek() > -1)
+                {
+                    channels.Add(reader.ReadLine());
+                }
+
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadLine();
+            }
+
             try
             {
                 TcpListener listener = new TcpListener(1304);
@@ -53,18 +72,22 @@ namespace ChatRoomServer
                     {
                         case "0":
                             //A message has been sent by a client
-                            Message newMessage = new Message(splitRequest[1]);
+                            Message newMessage = new Message(splitRequest[1], splitRequest[3],splitRequest[2]);
                             newMessage.Sender = splitRequest[2];
                             newMessages.Add(newMessage);
-                            //Console.WriteLine("A message has been received: " + splitRequest[1]);
+
+                            String responseString = "0|Good";
+                            byte[] response = Encoding.ASCII.GetBytes(responseString);
+                            writer.BaseStream.Write(response, 0, response.Length);
+                            writer.Flush();
                             break;
                         case "1":
                             //Searching for new messages
 
                             if (messagesToSend.Count == 0)
                             {
-                                String responseString = "2";
-                                byte[] response = Encoding.ASCII.GetBytes(responseString);
+                                responseString = "2";
+                                response = Encoding.ASCII.GetBytes(responseString);
                                 writer.BaseStream.Write(response, 0, response.Length);
                                 writer.Flush();
                             }
@@ -76,8 +99,8 @@ namespace ChatRoomServer
                                 {
                                     if (!messagesToSend[i].Received.Contains(splitRequest[1]))
                                     {
-                                        String responseString = "1|" + messagesToSend[i].Sender + ": " + messagesToSend[i].Contents;
-                                        byte[] response = Encoding.ASCII.GetBytes(responseString);
+                                        responseString = "1|" + messagesToSend[i].Sender + ": " + messagesToSend[i].Contents + "|" + messagesToSend[i].Channel;
+                                        response = Encoding.ASCII.GetBytes(responseString);
                                         writer.BaseStream.Write(response, 0, response.Length);
                                         writer.Flush();
                                         //Console.WriteLine("A message has been sent out.");
@@ -116,20 +139,28 @@ namespace ChatRoomServer
                             String submittedName = splitRequest[1];
                             if (!clientNames.Contains(submittedName))
                             {
-                                String responseString = "2|Yes";
-                                byte[] response = Encoding.ASCII.GetBytes(responseString);
+                                String channelsString = String.Empty;
+
+                                foreach (String channel in channels)
+                                {
+                                    channelsString += channel + ",";
+                                }
+
+                                channelsString = channelsString.TrimEnd(new char[] { '\n', '\r', '\0', ',' });
+
+                                responseString = "2|Yes|" + channelsString;
+                                response = Encoding.ASCII.GetBytes(responseString);
                                 writer.BaseStream.Write(response, 0, response.Length);
                                 writer.Flush();
                                 clientNames.Add(submittedName);
 
-                                Message notify = new Message(submittedName + " has joined the chat room!");
-                                notify.Sender = "Admin";
-                                newMessages.Add(notify);
+                                Message notifyJoined = new Message(submittedName + " has joined the chat room!", "Temp", "Admin");
+                                newMessages.Add(notifyJoined);
                             }
                             else
                             {
-                                String responseString = "2|No";
-                                byte[] response = Encoding.ASCII.GetBytes(responseString);
+                                responseString = "2|No";
+                                response = Encoding.ASCII.GetBytes(responseString);
                                 writer.BaseStream.Write(response, 0, response.Length);
                                 writer.Flush();
                             }
@@ -139,6 +170,9 @@ namespace ChatRoomServer
                             //A user is logging off
 
                             String clientName = splitRequest[1];
+
+                            Message notifyLeft = new Message(clientName + " has left the chat room!", "Temp", "Admin");
+                            newMessages.Add(notifyLeft);
 
                             clientNames.Remove(clientName);
                             break;
@@ -155,6 +189,7 @@ namespace ChatRoomServer
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.ReadLine();
             }
         }
     }
