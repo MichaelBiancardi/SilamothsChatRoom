@@ -16,6 +16,8 @@ namespace ChatRoomClient
     {
         public bool kill = false;
 
+        //Test
+
         public MainForm()
         {
             InitializeComponent();
