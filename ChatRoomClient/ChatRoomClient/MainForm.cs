@@ -90,7 +90,11 @@ namespace ChatRoomClient
                 channelTabs.TabPages[channel].Controls.Add(temp);
             }
 
-            inputTextBox.Focus();   //Not doing what I want it to do...
+            DataGridView people = new DataGridView();
+            channelTabs.TabPages.Add("People", "Who's Online?");
+            channelTabs.TabPages["People"].Controls.Add(people);
+
+            inputTextBox.Select();
         }
 
         private void KeyPress(object sender, KeyPressEventArgs e)
