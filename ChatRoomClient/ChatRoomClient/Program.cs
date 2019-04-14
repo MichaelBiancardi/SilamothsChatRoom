@@ -60,6 +60,12 @@ namespace ChatRoomClient
 
                 if (id == "1")
                     form.InsertIntoTextBox(splitResponse[1], splitResponse[2]);
+                else if (id == "5")
+                {
+                    //Updating list of currently online people
+
+                    
+                }
 
                 client.Close();
 
