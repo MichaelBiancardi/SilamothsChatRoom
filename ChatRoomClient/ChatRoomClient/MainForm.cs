@@ -124,7 +124,25 @@ namespace ChatRoomClient
                 return;
             }
 
+            MessageForm messageForm = new MessageForm();
+            messageForm.ShowDialog();
 
+            if (messageForm.Message == null)
+                return;
+
+            TcpClient client = new TcpClient("127.0.0.1", 1304);
+
+            StreamWriter writer = new StreamWriter(client.GetStream());
+
+            byte[] message = ASCIIEncoding.ASCII.GetBytes("5|" + messageForm.Message + "|" + name);
+            writer.BaseStream.Write(message, 0, message.Length);
+            writer.Flush();
+
+            byte[] buffer = new byte[client.Client.ReceiveBufferSize];
+            client.Client.Receive(buffer);
+            String response = Encoding.ASCII.GetString(buffer).TrimEnd(new char[] { '\n', '\r', default(char) });
+            List<String> splitResponse = response.Split(new char[] { '|' }).ToList<string>();
+            String id = splitResponse[0];
         }
 
         private void RefreshButton_Click(object sender, EventArgs e)

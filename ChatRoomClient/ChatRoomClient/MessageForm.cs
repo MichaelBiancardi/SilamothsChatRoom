@@ -16,5 +16,17 @@ namespace ChatRoomClient
         {
             InitializeComponent();
         }
+
+        private void SendButton_Click(object sender, EventArgs e)
+        {
+            Message = messageTextBox.Text;
+        }
+
+        private void CancelButton_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        public String Message { get; set; }
     }
 }
