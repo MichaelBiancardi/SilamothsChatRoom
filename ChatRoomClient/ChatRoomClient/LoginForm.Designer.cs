@@ -36,24 +36,28 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(120, 33);
+            this.label1.Location = new System.Drawing.Point(240, 63);
+            this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(221, 13);
+            this.label1.Size = new System.Drawing.Size(448, 25);
             this.label1.TabIndex = 0;
             this.label1.Text = "Please enter a name for use in the chat room:";
             // 
             // nameTextBox
             // 
-            this.nameTextBox.Location = new System.Drawing.Point(121, 78);
+            this.nameTextBox.Location = new System.Drawing.Point(242, 150);
+            this.nameTextBox.Margin = new System.Windows.Forms.Padding(6);
             this.nameTextBox.Name = "nameTextBox";
-            this.nameTextBox.Size = new System.Drawing.Size(218, 20);
+            this.nameTextBox.Size = new System.Drawing.Size(432, 31);
             this.nameTextBox.TabIndex = 1;
+            this.nameTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NameTextBox_KeyPress);
             // 
             // goButton
             // 
-            this.goButton.Location = new System.Drawing.Point(193, 134);
+            this.goButton.Location = new System.Drawing.Point(386, 258);
+            this.goButton.Margin = new System.Windows.Forms.Padding(6);
             this.goButton.Name = "goButton";
-            this.goButton.Size = new System.Drawing.Size(75, 23);
+            this.goButton.Size = new System.Drawing.Size(150, 44);
             this.goButton.TabIndex = 2;
             this.goButton.Text = "Go";
             this.goButton.UseVisualStyleBackColor = true;
@@ -62,13 +66,14 @@
             // LoginForm
             // 
             this.AcceptButton = this.goButton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(460, 211);
+            this.ClientSize = new System.Drawing.Size(920, 406);
             this.ControlBox = false;
             this.Controls.Add(this.goButton);
             this.Controls.Add(this.nameTextBox);
             this.Controls.Add(this.label1);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "LoginForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Login";

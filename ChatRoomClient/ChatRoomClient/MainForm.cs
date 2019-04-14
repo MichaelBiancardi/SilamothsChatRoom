@@ -91,8 +91,19 @@ namespace ChatRoomClient
             }
 
             DataGridView people = new DataGridView();
+            people.Columns.Add("name", "Name");
+            people.Columns.Add("message", "Message");
+            people.AllowUserToAddRows = false;
+            people.ReadOnly = true;
+            people.Size = new Size(3000, 582);
+            people.Columns[0].Width = 582;
             channelTabs.TabPages.Add("People", "Who's Online?");
             channelTabs.TabPages["People"].Controls.Add(people);
+
+            TabControl messages = new TabControl();
+            messages.Size = new Size(3000, 582);
+            channelTabs.TabPages.Add("Messages", "Messages");
+            channelTabs.TabPages["Messages"].Controls.Add(messages);
 
             inputTextBox.Select();
         }
@@ -100,6 +111,43 @@ namespace ChatRoomClient
         private void KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = true;
+        }
+
+        private void ChannelTabs_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (channelTabs.SelectedTab == channelTabs.TabPages["People"] && channelTabs.SelectedTab != null)
+            {
+                DataGridView peopleGrid = (DataGridView)channelTabs.TabPages["People"].Controls[0];
+                peopleGrid.Rows.Clear();
+
+                TcpClient client = new TcpClient("127.0.0.1", 1304);
+
+                StreamWriter writer = new StreamWriter(client.GetStream());
+
+                byte[] message = ASCIIEncoding.ASCII.GetBytes("4");
+                writer.BaseStream.Write(message, 0, message.Length);
+                writer.Flush();
+
+                byte[] buffer = new byte[client.Client.ReceiveBufferSize];
+                client.Client.Receive(buffer);
+                String response = Encoding.ASCII.GetString(buffer).TrimEnd(new char[] { '\n', '\r', default(char) });
+                List<String> splitResponse = response.Split(new char[] { '|' }).ToList<string>();
+                String id = splitResponse[0];
+
+                if (id == "4")
+                {
+                    List<String> people = splitResponse[1].Split('`').ToList<String>(); //Prevent people from typing '`' into name
+
+                    for (int i = 0; i < people.Count; i++)
+                    {
+                        peopleGrid.Rows.Add();
+                        String[] cells = new String[2];
+                        cells[0] = people[i];
+                        cells[1] = "Send A Message";
+                        peopleGrid.Rows[i].SetValues(cells);
+                    }
+                }
+            }
         }
     }
 }

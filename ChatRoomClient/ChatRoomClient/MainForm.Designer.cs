@@ -39,18 +39,20 @@
             // 
             // inputTextBox
             // 
-            this.inputTextBox.Location = new System.Drawing.Point(12, 380);
+            this.inputTextBox.Location = new System.Drawing.Point(24, 731);
+            this.inputTextBox.Margin = new System.Windows.Forms.Padding(6);
             this.inputTextBox.Name = "inputTextBox";
             this.inputTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.inputTextBox.Size = new System.Drawing.Size(724, 58);
+            this.inputTextBox.Size = new System.Drawing.Size(1444, 108);
             this.inputTextBox.TabIndex = 0;
             this.inputTextBox.Text = "";
             // 
             // sendButton
             // 
-            this.sendButton.Location = new System.Drawing.Point(742, 380);
+            this.sendButton.Location = new System.Drawing.Point(1484, 731);
+            this.sendButton.Margin = new System.Windows.Forms.Padding(6);
             this.sendButton.Name = "sendButton";
-            this.sendButton.Size = new System.Drawing.Size(134, 58);
+            this.sendButton.Size = new System.Drawing.Size(268, 112);
             this.sendButton.TabIndex = 1;
             this.sendButton.Text = "Send Message";
             this.sendButton.UseVisualStyleBackColor = true;
@@ -60,9 +62,10 @@
             // 
             this.outputTextBox.Enabled = false;
             this.outputTextBox.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.outputTextBox.Location = new System.Drawing.Point(12, 13);
+            this.outputTextBox.Location = new System.Drawing.Point(24, 25);
+            this.outputTextBox.Margin = new System.Windows.Forms.Padding(6);
             this.outputTextBox.Name = "outputTextBox";
-            this.outputTextBox.Size = new System.Drawing.Size(864, 327);
+            this.outputTextBox.Size = new System.Drawing.Size(1724, 625);
             this.outputTextBox.TabIndex = 2;
             this.outputTextBox.Text = "";
             // 
@@ -70,28 +73,32 @@
             // 
             this.channelTabs.Controls.Add(this.tabPage1);
             this.channelTabs.Controls.Add(this.tabPage2);
-            this.channelTabs.Location = new System.Drawing.Point(12, 13);
+            this.channelTabs.Location = new System.Drawing.Point(24, 25);
+            this.channelTabs.Margin = new System.Windows.Forms.Padding(6);
             this.channelTabs.Name = "channelTabs";
             this.channelTabs.SelectedIndex = 0;
-            this.channelTabs.Size = new System.Drawing.Size(864, 327);
+            this.channelTabs.Size = new System.Drawing.Size(1728, 629);
             this.channelTabs.TabIndex = 3;
+            this.channelTabs.SelectedIndexChanged += new System.EventHandler(this.ChannelTabs_SelectedIndexChanged);
             // 
             // tabPage1
             // 
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Location = new System.Drawing.Point(8, 39);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(6);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(856, 301);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(6);
+            this.tabPage1.Size = new System.Drawing.Size(1712, 582);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // tabPage2
             // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Location = new System.Drawing.Point(8, 39);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(6);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(856, 301);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(6);
+            this.tabPage2.Size = new System.Drawing.Size(1712, 582);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -99,13 +106,16 @@
             // MainForm
             // 
             this.AcceptButton = this.sendButton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(902, 450);
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ClientSize = new System.Drawing.Size(1804, 865);
             this.Controls.Add(this.channelTabs);
             this.Controls.Add(this.outputTextBox);
             this.Controls.Add(this.sendButton);
             this.Controls.Add(this.inputTextBox);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Silamoth\'s Chat Room";

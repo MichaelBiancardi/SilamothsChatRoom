@@ -176,6 +176,22 @@ namespace ChatRoomServer
 
                             clientNames.Remove(clientName);
                             break;
+                        case "4":
+                            //Requesting list of people currently online
+
+                            responseString = "4|";
+
+                            foreach (String name in clientNames)
+                            {
+                                responseString += name + "`";
+                            }
+
+                            responseString = responseString.TrimEnd(new char[] { '`' });
+
+                            response = Encoding.ASCII.GetBytes(responseString);
+                            writer.BaseStream.Write(response, 0, response.Length);
+                            writer.Flush();
+                            break;
                     }
 
                     foreach (Message message in newMessages)

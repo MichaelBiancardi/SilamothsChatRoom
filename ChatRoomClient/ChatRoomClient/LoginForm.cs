@@ -78,5 +78,11 @@ namespace ChatRoomClient
             if (name == null)
                 Environment.Exit(Environment.ExitCode);
         }
+
+        private void NameTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '`')
+                e.Handled = true;
+        }
     }
 }
