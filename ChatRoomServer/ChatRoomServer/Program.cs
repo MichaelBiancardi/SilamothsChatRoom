@@ -28,13 +28,11 @@ namespace ChatRoomServer
     {
         public String Contents { get; set; }
         public String Sender { get; set; }
-        public String Receiver { get; set; }
 
-        public PrivateMessage(String contents, String sender, String receiver)
+        public PrivateMessage(String contents, String sender)
         {
             Contents = contents;
             Sender = sender;
-            Receiver = receiver;
         }
     }
 
@@ -43,7 +41,8 @@ namespace ChatRoomServer
         static List<String> clientNames = new List<String>();
         static List<Message> messagesToSend = new List<Message>();
         static List<String> channels = new List<String>();
-        static List<PrivateMessage> privateMessages = new List<PrivateMessage>();
+        static Dictionary<String, PrivateMessage> privateMessages = new Dictionary<String, PrivateMessage>();
+        //Indexed by receiver
 
         static void Main(string[] args)
         {
@@ -64,8 +63,8 @@ namespace ChatRoomServer
                 Console.ReadLine();
             }
 
-            try
-            {
+            //try
+            //{
                 TcpListener listener = new TcpListener(1304);
                 listener.Start();
 
@@ -214,10 +213,24 @@ namespace ChatRoomServer
                             String sender = splitRequest[2];
                             String receiver = splitRequest[3];
 
-                            PrivateMessage pMessage = new PrivateMessage(sentMessage, sender, receiver);
+                            PrivateMessage pMessage = new PrivateMessage(sentMessage, receiver);
 
-                            privateMessages.Add(pMessage);
+                            privateMessages.Add(sender, pMessage);
                             break;
+                        case "6":
+                        //User checking for private messages
+
+                        String requesterName = splitRequest[1];
+
+                        if (privateMessages.ContainsKey(requesterName))
+                            responseString = "6|Yes|" + privateMessages[requesterName].Sender + "|" + privateMessages[requesterName].Contents;
+                        else
+                            responseString = "6|No";
+
+                        response = Encoding.ASCII.GetBytes(responseString);
+                        writer.BaseStream.Write(response, 0, response.Length);
+                        writer.Flush();
+                        break;
                     }
 
                     foreach (Message message in newMessages)
@@ -227,12 +240,12 @@ namespace ChatRoomServer
 
                     client.Close();
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.ReadLine();
-            }
+            //}
+            //catch (Exception ex)
+            //{
+                //Console.WriteLine(ex.Message);
+                //Console.ReadLine();
+            //}
         }
     }
 }

@@ -26,10 +26,12 @@ namespace ChatRoomClient
             //Set up multithreading
 
             Thread initThread = new Thread(new ThreadStart(Init));
-            Thread networkThread = new Thread(new ThreadStart(CheckForStuff));
+            Thread generalMessageThread = new Thread(new ThreadStart(CheckForGeneralMessages));
+            Thread privateMessageThread = new Thread(new ThreadStart(CheckForPrivateMessages));
 
             initThread.Start();
-            networkThread.Start();
+            generalMessageThread.Start();
+            privateMessageThread.Start();
         }
 
         static void Init()
@@ -39,11 +41,11 @@ namespace ChatRoomClient
             Application.Run(form);
         }
 
-        static void CheckForStuff()
+        static void CheckForGeneralMessages()
         {
             while (true)
             {
-                //Check for incoming messages and such
+                //Check for incoming channel messages
 
                 TcpClient client = new TcpClient("127.0.0.1", 1304);
 
@@ -60,12 +62,6 @@ namespace ChatRoomClient
 
                 if (id == "1")
                     form.InsertIntoTextBox(splitResponse[1], splitResponse[2]);
-                else if (id == "5")
-                {
-                    //Updating list of currently online people
-
-                    
-                }
 
                 client.Close();
 
@@ -83,6 +79,29 @@ namespace ChatRoomClient
 
                     Environment.Exit(Environment.ExitCode);
                 }
+            }
+        }
+
+        static void CheckForPrivateMessages()
+        {
+            //Check for incoming private messages
+
+            TcpClient client = new TcpClient("127.0.0.1", 1304);
+
+            byte[] updateMessage = ASCIIEncoding.ASCII.GetBytes("6|" + name);
+            StreamWriter writer = new StreamWriter(client.GetStream());
+            writer.BaseStream.Write(updateMessage, 0, updateMessage.Length);
+            writer.Flush();
+
+            byte[] buffer = new byte[client.Client.ReceiveBufferSize];
+            client.Client.Receive(buffer);
+            String response = Encoding.ASCII.GetString(buffer).TrimEnd(new char[] { '\n', '\r', default(char) });
+            List<String> splitResponse = response.Split(new char[] { '|' }).ToList<string>();
+            String id = splitResponse[0];
+
+            if (id == "6" && splitResponse[1] == "Yes")
+            {
+                form.AddPrivateMessage(splitResponse[2], splitResponse[3]);
             }
         }
 

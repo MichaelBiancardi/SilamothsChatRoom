@@ -20,6 +20,7 @@ namespace ChatRoomClient
         private void SendButton_Click(object sender, EventArgs e)
         {
             Message = messageTextBox.Text;
+            Close();
         }
 
         private void CancelButton_Click(object sender, EventArgs e)

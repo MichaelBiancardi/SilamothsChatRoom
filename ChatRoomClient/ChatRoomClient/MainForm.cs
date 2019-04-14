@@ -60,7 +60,7 @@ namespace ChatRoomClient
 
             try
             {
-                RichTextBox channelBox = (RichTextBox)channelTabs.TabPages[channel].Controls[0];    //Hopefully works
+                RichTextBox channelBox = (RichTextBox)channelTabs.TabPages[channel].Controls[0];
 
                 channelBox.Invoke(new Action(() => channelBox.Text += text + Environment.NewLine));
 
@@ -194,6 +194,26 @@ namespace ChatRoomClient
             if (channelTabs.SelectedTab == channelTabs.TabPages["People"] && channelTabs.SelectedTab != null)
             {
                 GetPeopleOnline();
+            }
+        }
+
+        public void AddPrivateMessage(String sender, String contents)
+        {
+            TabControl messageTabs = (TabControl)channelTabs.TabPages["Messages"].Controls[0];
+
+            if (messageTabs.TabPages.ContainsKey(sender))
+            {
+
+            }
+            else
+            {
+                RichTextBox temp = new RichTextBox();
+                temp.ClientSize = channelTabs.ClientSize;
+                temp.ScrollBars = RichTextBoxScrollBars.Vertical;
+                temp.KeyPress += KeyPress;
+                messageTabs.TabPages[sender].Controls.Add(temp);
+
+                temp.Text += sender = ": " + contents + "\n";
             }
         }
     }
