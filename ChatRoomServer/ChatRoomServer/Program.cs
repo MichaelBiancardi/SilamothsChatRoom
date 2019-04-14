@@ -24,11 +24,26 @@ namespace ChatRoomServer
         }
     }
 
+    struct PrivateMessage
+    {
+        public String Contents { get; set; }
+        public String Sender { get; set; }
+        public String Receiver { get; set; }
+
+        public PrivateMessage(String contents, String sender, String receiver)
+        {
+            Contents = contents;
+            Sender = sender;
+            Receiver = receiver;
+        }
+    }
+
     class Program
     {
         static List<String> clientNames = new List<String>();
         static List<Message> messagesToSend = new List<Message>();
         static List<String> channels = new List<String>();
+        static List<PrivateMessage> privateMessages = new List<PrivateMessage>();
 
         static void Main(string[] args)
         {
@@ -191,6 +206,17 @@ namespace ChatRoomServer
                             response = Encoding.ASCII.GetBytes(responseString);
                             writer.BaseStream.Write(response, 0, response.Length);
                             writer.Flush();
+                            break;
+                        case "5":
+                            //User sending a private message
+
+                            String sentMessage = splitRequest[1];
+                            String sender = splitRequest[2];
+                            String receiver = splitRequest[3];
+
+                            PrivateMessage pMessage = new PrivateMessage(sentMessage, sender, receiver);
+
+                            privateMessages.Add(pMessage);
                             break;
                     }
 

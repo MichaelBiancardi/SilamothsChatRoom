@@ -134,7 +134,7 @@ namespace ChatRoomClient
 
             StreamWriter writer = new StreamWriter(client.GetStream());
 
-            byte[] message = ASCIIEncoding.ASCII.GetBytes("5|" + messageForm.Message + "|" + name);
+            byte[] message = ASCIIEncoding.ASCII.GetBytes("5|" + messageForm.Message + "|" + LoginForm.Username + "|" + name);
             writer.BaseStream.Write(message, 0, message.Length);
             writer.Flush();
 
