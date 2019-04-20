@@ -84,24 +84,27 @@ namespace ChatRoomClient
 
         static void CheckForPrivateMessages()
         {
-            //Check for incoming private messages
-
-            TcpClient client = new TcpClient("127.0.0.1", 1304);
-
-            byte[] updateMessage = ASCIIEncoding.ASCII.GetBytes("6|" + name);
-            StreamWriter writer = new StreamWriter(client.GetStream());
-            writer.BaseStream.Write(updateMessage, 0, updateMessage.Length);
-            writer.Flush();
-
-            byte[] buffer = new byte[client.Client.ReceiveBufferSize];
-            client.Client.Receive(buffer);
-            String response = Encoding.ASCII.GetString(buffer).TrimEnd(new char[] { '\n', '\r', default(char) });
-            List<String> splitResponse = response.Split(new char[] { '|' }).ToList<string>();
-            String id = splitResponse[0];
-
-            if (id == "6" && splitResponse[1] == "Yes")
+            while (true)
             {
-                form.AddPrivateMessage(splitResponse[2], splitResponse[3]);
+                //Check for incoming private messages
+
+                TcpClient client = new TcpClient("127.0.0.1", 1304);
+
+                byte[] updateMessage = ASCIIEncoding.ASCII.GetBytes("6|" + name);
+                StreamWriter writer = new StreamWriter(client.GetStream());
+                writer.BaseStream.Write(updateMessage, 0, updateMessage.Length);
+                writer.Flush();
+
+                byte[] buffer = new byte[client.Client.ReceiveBufferSize];
+                client.Client.Receive(buffer);
+                String response = Encoding.ASCII.GetString(buffer).TrimEnd(new char[] { '\n', '\r', default(char) });
+                List<String> splitResponse = response.Split(new char[] { '|' }).ToList<string>();
+                String id = splitResponse[0];
+
+                if (id == "6" && splitResponse[1] == "Yes")
+                {
+                    form.AddPrivateMessage(splitResponse[2], splitResponse[3]);
+                }
             }
         }
 

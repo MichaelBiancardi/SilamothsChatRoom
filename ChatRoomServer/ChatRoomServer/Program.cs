@@ -210,12 +210,12 @@ namespace ChatRoomServer
                             //User sending a private message
 
                             String sentMessage = splitRequest[1];
-                            String sender = splitRequest[2];
-                            String receiver = splitRequest[3];
+                            String sender = splitRequest[3];
+                            String receiver = splitRequest[2];
 
                             PrivateMessage pMessage = new PrivateMessage(sentMessage, receiver);
 
-                            privateMessages.Add(sender, pMessage);
+                            privateMessages.Add(sender, pMessage);      //TODO: Fix same key issue...
                             break;
                         case "6":
                         //User checking for private messages

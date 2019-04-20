@@ -203,17 +203,19 @@ namespace ChatRoomClient
 
             if (messageTabs.TabPages.ContainsKey(sender))
             {
-
+                RichTextBox senderMessages = (RichTextBox)messageTabs.TabPages[sender].Controls[0];
+                senderMessages.Text += contents + "\n";
             }
             else
             {
+                messageTabs.TabPages.Add(sender, sender);
+
                 RichTextBox temp = new RichTextBox();
                 temp.ClientSize = channelTabs.ClientSize;
                 temp.ScrollBars = RichTextBoxScrollBars.Vertical;
                 temp.KeyPress += KeyPress;
+                temp.Text += contents + "\n";
                 messageTabs.TabPages[sender].Controls.Add(temp);
-
-                temp.Text += sender = ": " + contents + "\n";
             }
         }
     }
